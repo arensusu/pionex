@@ -87,9 +87,9 @@ func (c *Client) HttpPost(api string, body any) ([]byte, error) {
 		return nil, err
 	}
 
-	signature := c.Sign(method, api, timestamp, nil, string(bodyJson))
+	signature := c.Sign(method, api, timestamp, url.Values{}, string(bodyJson))
 
-	uri := c.Endpoint + api
+	uri := c.Endpoint + api + "?timestamp=" + timestamp
 
 	reader := bytes.NewReader(bodyJson)
 	request, err := http.NewRequest(method, uri, reader)

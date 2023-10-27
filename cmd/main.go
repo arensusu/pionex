@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
-	"net/url"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/arensusu/pionex"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
@@ -17,11 +20,18 @@ func main() {
 	// result := c.Sign("GET", "/api/v1/trade/allOrders", "1655896754515", params, `{"symbol": "BTC_USDT"}`)
 	// fmt.Println(result)
 
-	c := pionex.NewClient("6w8C8aN1vxQQv8iipA83e51SEZLEkMGdDrHJU6wXLd2mrL99KBk7vc7jaNxmHCYU6K", "S72JjcEb3DhoPsBXoNisNqMeAQ4kPMTtsnGmWRAPDauxHFJHHwpwBSdxsJsjAEzf")
-	query := url.Values{}
-	query.Add("symbol", "TRB_USDT_PERP")
-	query.Add("limit", "10")
-	resp, err := c.HttpGet("/api/v1/market/trades", query)
+	c := pionex.NewClient(os.Getenv("API_KEY"), os.Getenv("API_SECRET"))
+
+	param := map[string]string{
+		"symbol":        "BTC_USDT_PERP",
+		"side":          "BUY",
+		"type":          "LIMIT",
+		"clientOrderId": strconv.FormatInt(time.Now().UnixMilli(), 10),
+		"price":         "120",
+		"size":          "0.1",
+	}
+
+	resp, err := c.HttpPost("/api/v1/trade/order", param)
 	if err != nil {
 		fmt.Println(err)
 	} else {

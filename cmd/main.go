@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
-	"strconv"
-	"time"
 
 	"github.com/arensusu/pionex"
 	_ "github.com/joho/godotenv/autoload"
@@ -23,15 +22,16 @@ func main() {
 	c := pionex.NewClient(os.Getenv("API_KEY"), os.Getenv("API_SECRET"))
 
 	param := map[string]string{
-		"symbol":        "BTC_USDT_PERP",
-		"side":          "BUY",
-		"type":          "LIMIT",
-		"clientOrderId": strconv.FormatInt(time.Now().UnixMilli(), 10),
-		"price":         "120",
-		"size":          "0.1",
+		"symbol": "BTC_USDT_PERP",
+		"side":   "BUY",
 	}
 
-	resp, err := c.HttpPost("/api/v1/trade/order", param)
+	query := url.Values{}
+	query.Add("symbol", "BTC_USDT_PERP")
+
+	_, _ = param, query
+
+	resp, err := c.HttpGet("/api/v1/market/tickers", query)
 	if err != nil {
 		fmt.Println(err)
 	} else {

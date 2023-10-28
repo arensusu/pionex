@@ -31,7 +31,7 @@ func main() {
 
 	_, _ = param, query
 
-	resp, err := c.HttpGet("/api/v1/market/tickers", query)
+	resp, err := c.HttpGet("/api/v1/market/bookTickers", query)
 	if err != nil {
 		fmt.Println(err)
 	} else {

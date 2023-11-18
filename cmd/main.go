@@ -27,11 +27,10 @@ func main() {
 	}
 
 	query := url.Values{}
-	query.Add("symbol", "BTC_USDT_PERP")
 
 	_, _ = param, query
 
-	resp, err := c.HttpGet("/api/v1/market/bookTickers", query)
+	resp, err := c.HttpGet("/api/v1/account/balances", query)
 	if err != nil {
 		fmt.Println(err)
 	} else {

@@ -1,4 +1,4 @@
-package order
+package orders
 
 import "github.com/arensusu/pionex/domain"
 

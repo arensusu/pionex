@@ -3,7 +3,7 @@ package pionex
 import (
 	"github.com/arensusu/pionex/account"
 	"github.com/arensusu/pionex/market"
-	"github.com/arensusu/pionex/order"
+	"github.com/arensusu/pionex/orders"
 )
 
 func (c *Client) Market() *market.MarketService {
@@ -14,6 +14,6 @@ func (c *Client) Account() *account.AccountService {
 	return account.NewAccountService(c)
 }
 
-func (c *Client) Order() *order.OrderService {
-	return order.NewOrderService(c)
+func (c *Client) Order() *orders.OrderService {
+	return orders.NewOrderService(c)
 }

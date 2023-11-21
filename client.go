@@ -12,8 +12,6 @@ import (
 	"net/url"
 	"strconv"
 	"time"
-
-	"github.com/arensusu/pionex/domain"
 )
 
 type Client struct {
@@ -22,7 +20,7 @@ type Client struct {
 	Endpoint  string
 }
 
-func NewClient(key, secret string) domain.Client {
+func NewClient(key, secret string) *Client {
 	return &Client{
 		ApiKey:    key,
 		ApiSecret: secret,
@@ -80,6 +78,46 @@ func (c *Client) HttpGet(api string, param url.Values) ([]byte, error) {
 
 func (c *Client) HttpPost(api string, body any) ([]byte, error) {
 	method := "POST"
+	timestamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
+
+	bodyJson, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+
+	signature := c.Sign(method, api, timestamp, url.Values{}, string(bodyJson))
+
+	uri := c.Endpoint + api + "?timestamp=" + timestamp
+
+	reader := bytes.NewReader(bodyJson)
+	request, err := http.NewRequest(method, uri, reader)
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("PIONEX-KEY", c.ApiKey)
+	request.Header.Add("PIONEX-SIGNATURE", signature)
+
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	responseBody, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.StatusCode != 200 {
+		return nil, fmt.Errorf("%d: %s", response.StatusCode, responseBody)
+	}
+
+	return responseBody, nil
+}
+
+func (c *Client) HttpDelete(api string, body any) ([]byte, error) {
+	method := "DELETE"
 	timestamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
 
 	bodyJson, err := json.Marshal(body)

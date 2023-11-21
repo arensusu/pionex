@@ -6,6 +6,7 @@ type Client interface {
 	Sign(method string, api string, timestamp string, param url.Values, body string) string
 	HttpGet(api string, param url.Values) ([]byte, error)
 	HttpPost(api string, body any) ([]byte, error)
+	HttpDelete(api string, body any) ([]byte, error)
 }
 
 type HttpResponse struct {
